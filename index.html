@@ -9,13 +9,13 @@
 <meta property="og:type" content="website">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
-<link rel="stylesheet" href="css/style.css"></head>
+<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/cart.css"></head>
 <body>
 <div id="pg"></div>
 <nav id="nav"><div class="wrap nb">
 <a href="#home" class="brand"><img src="images/logo.jpg" alt="Jasmine Crackers logo" width="40" height="40">Jasmine Crackers</a>
 <div class="links" id="links"><a href="#home">Home</a><a href="#about">About</a><a href="#categories">Categories</a><a href="#why">Why Choose Us</a><a href="#gallery">Gallery</a><a href="#contact">Contact</a></div>
-<div class="nr"><a class="btn pri" data-wa href="#" aria-label="Order on WhatsApp"><i data-lucide="message-circle"></i><span>WhatsApp Order</span></a><button class="burger" id="bg" aria-label="Open menu" aria-expanded="false"><i data-lucide="menu"></i></button></div>
+<div class="nr"><button class="cartbtn" id="cartbtn" aria-label="Open cart"><i data-lucide="shopping-cart"></i><span class="cb" id="cb" hidden>0</span></button><a class="btn pri" data-wa href="#" aria-label="Order on WhatsApp"><i data-lucide="message-circle"></i><span>WhatsApp Order</span></a><button class="burger" id="bg" aria-label="Open menu" aria-expanded="false"><i data-lucide="menu"></i></button></div>
 </div></nav>
 
 <header class="hero" id="home">
@@ -43,10 +43,10 @@
 
 <section id="categories"><div class="wrap">
 <h2 class="rv">Browse the <span class="gold">collection</span></h2>
-<p class="lead rv">Add items to your enquiry, then send them all in one WhatsApp message.</p>
+<p class="lead rv">Add items to your cart, then check out on the website or send your list on WhatsApp.</p>
 <div class="chips" id="chips" role="group" aria-label="Filter by category"></div>
 <div class="grid" id="grid" aria-live="polite"></div>
-<p class="note">Sample catalogue for layout only. Products and categories are placeholders until Jasmine Crackers supplies its real list. Edit the CATEGORIES and PRODUCTS data in the script.</p>
+<p class="note" id="samplenote">Sample catalogue for layout only. Products and categories are placeholders until Jasmine Crackers supplies its real list. Edit the CATEGORIES and PRODUCTS data in the script.</p>
 </div></section>
 
 <section class="val" id="why"><div class="wrap">
@@ -106,5 +106,9 @@
 <div id="ct" role="status"><span>Call <b>+91 88070 30143</b></span><button id="cc">Copy number</button></div>
 <div id="lb" role="dialog" aria-label="Photo" aria-modal="true"><div></div></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" defer></script>
+<script src="js/config.js" defer></script>
+<script src="js/db.js" defer></script>
 <script src="js/script.js" defer></script>
+<script src="js/cart.js" defer></script>
 </body></html>

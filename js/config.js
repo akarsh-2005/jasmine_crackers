@@ -1,0 +1,1 @@
+window.JC_CONFIG={SUPABASE_URL:"https://sjizrudhmatrknqbitrt.supabase.co/rest/v1/",SUPABASE_ANON_KEY:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqaXpydWRobWF0cmtucWJpdHJ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTExODk4NjEsImV4cCI6MjEwNjc2NTg2MX0.iNeXEIbkuxKxFlooH0CDSe6RlHjYfB8zxd2WTCdNgSk"};

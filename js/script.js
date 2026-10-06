@@ -1,13 +1,15 @@
-const PHONE="918807030143",MAP="https://www.google.com/maps/search/?api=1&query=Jasmine+Crackers+Kagganur+Sarjapura";
-// EDIT ME: placeholder catalogue. Replace with real Jasmine Crackers data. price:null shows "Price on enquiry".
-const CATEGORIES=["Sparklers","Fountains","Flower Pots","Sky Shots","Gift Boxes","Family Packs"];
-const PRODUCTS=[
-{name:"Sample sparkler pack",category:"Sparklers",description:"Placeholder. Replace with a real product.",price:null,pos:"10% 80%"},
-{name:"Sample fountain",category:"Fountains",description:"Placeholder. Replace with a real product.",price:null,pos:"85% 55%"},
-{name:"Sample flower pot",category:"Flower Pots",description:"Placeholder. Replace with a real product.",price:null,pos:"15% 40%"},
-{name:"Sample sky shot",category:"Sky Shots",description:"Placeholder. Replace with a real product.",price:null,pos:"30% 55%"},
-{name:"Sample gift box",category:"Gift Boxes",description:"Placeholder. Replace with a real product.",price:null,pos:"60% 60%"},
-{name:"Sample family pack",category:"Family Packs",description:"Placeholder. Replace with a real product.",price:null,pos:"50% 85%"}];
+let PHONE="918807030143";const MAP="https://www.google.com/maps/search/?api=1&query=Jasmine+Crackers+Kagganur+Sarjapura";
+// EDIT ME: placeholder catalogue. Replace with real Jasmine Crackers data.
+// id: unique, no spaces | price: NUMBER in rupees, e.g. 120. CLIENT MUST SUPPLY REAL PRICES. price:null shows "Price on request" and the shop confirms the price.
+// available: false shows "Currently unavailable" | image: optional path like "images/p1.jpg" (else the shop-photo crop in pos is used)
+let CATEGORIES=["Sparklers","Fountains","Flower Pots","Sky Shots","Gift Boxes","Family Packs"];
+let PRODUCTS=[
+{id:"sparkler-pack",available:true,image:"",name:"Sample sparkler pack",category:"Sparklers",description:"Placeholder. Replace with a real product.",price:null,pos:"10% 80%"},
+{id:"fountain",available:true,image:"",name:"Sample fountain",category:"Fountains",description:"Placeholder. Replace with a real product.",price:null,pos:"85% 55%"},
+{id:"flower-pot",available:true,image:"",name:"Sample flower pot",category:"Flower Pots",description:"Placeholder. Replace with a real product.",price:null,pos:"15% 40%"},
+{id:"sky-shot",available:true,image:"",name:"Sample sky shot",category:"Sky Shots",description:"Placeholder. Replace with a real product.",price:null,pos:"30% 55%"},
+{id:"gift-box",available:true,image:"",name:"Sample gift box",category:"Gift Boxes",description:"Placeholder. Replace with a real product.",price:null,pos:"60% 60%"},
+{id:"family-pack",available:true,image:"",name:"Sample family pack",category:"Family Packs",description:"Placeholder. Replace with a real product.",price:null,pos:"50% 85%"}];
 const GALLERY=[{pos:"50% 30%",c:"b",img:"front"},{pos:"20% 30%",c:"w"},{pos:"85% 40%",c:"t"},{pos:"40% 75%"},{pos:"60% 15%"},{pos:"90% 85%",c:"w"},{pos:"5% 85%"},{pos:"50% 50%",c:"w"},{pos:"70% 70%"}];
 const wa=t=>`https://wa.me/${PHONE}?text=${encodeURIComponent(t)}`;
 const GEN="Hello Jasmine Crackers, I would like to enquire about your crackers and wholesale prices.";
@@ -17,14 +19,29 @@ let cat="All";
 function chips(){$("#chips").innerHTML=["All",...CATEGORIES].map(c=>`<button class="chip ${c==cat?"on":""}" aria-pressed="${c==cat}">${c}</button>`).join("");
 document.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{cat=b.textContent;chips();grid()})}
 function grid(){$("#grid").innerHTML=PRODUCTS.filter(p=>cat=="All"||p.category==cat).map((p,i)=>{const n=PRODUCTS.indexOf(p),on=cart.has(p.name);
-return `<article class="pc" style="animation-delay:${i*50}ms"><div class="pi" style="background-position:${p.pos}" role="img" aria-label="${p.name} placeholder image"></div><div class="pb"><small>${p.category}</small><h3>${p.name}</h3><p>${p.description}</p><span class="price">${p.price?"₹"+p.price:"Price on enquiry"}</span><div class="pa"><button class="btn in" data-i="${n}">${on?"Added":"Add"}</button><a class="btn wa" style="animation:none" target="_blank" rel="noopener" href="${wa(`Hello Jasmine Crackers, I am interested in ${p.name}. Please share the price and availability.`)}">Ask</a></div></div></article>`}).join("");
-document.querySelectorAll(".in").forEach(b=>b.onclick=()=>{const n=PRODUCTS[b.dataset.i].name;cart.has(n)?cart.delete(n):cart.add(n);b.textContent=cart.has(n)?"Added":"Add";tray()})}
+return `<article class="pc" style="animation-delay:${i*50}ms"><div class="pi" style="${p.image?`background-image:url(${p.image});background-size:cover;`:""}background-position:${p.pos}" role="img" aria-label="${p.name} placeholder image"></div><div class="pb"><small>${p.category}</small><h3>${p.name}</h3><p>${p.description}</p><span class="price">${typeof p.price=="number"?"₹"+new Intl.NumberFormat("en-IN").format(p.price):"Price on request"}</span><div class="pa">${p.available===false?`<button class="btn" disabled>Out of stock</button>`:`<button class="btn atc" data-add="${p.id}"><i data-lucide="shopping-cart"></i><span>Add to cart</span></button>`}<a class="btn wa" style="animation:none" target="_blank" rel="noopener" href="${wa(`Hello Jasmine Crackers, I am interested in ${p.name}. Please share the price and availability.`)}">Ask</a></div></div></article>`}).join("");
+if(window.lucide)lucide.createIcons()}
 function tray(){const a=[...cart];$("#cnt").textContent=a.length;$("#tray").classList.toggle("o",a.length>0);
 $("#tl").innerHTML=a.map(n=>`<li>${n}<button aria-label="Remove ${n}" data-r="${n}">×</button></li>`).join("");
 document.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{cart.delete(b.dataset.r);grid();tray()});
 document.querySelector("[data-send]").href=wa("Hello Jasmine Crackers, I would like to enquire about these items. Please share price and availability:\n"+a.map((n,i)=>`${i+1}. ${n}`).join("\n"))}
 document.querySelector("[data-send]").target="_blank";
-chips();grid();
+window.productsReady=(async()=>{if(!window.sb)return chips(),grid();
+$("#samplenote")&&$("#samplenote").remove();
+$("#grid").innerHTML=Array(6).fill('<div class="pc sk"></div>').join("");
+try{const[c,p]=await Promise.all([sb.from("categories").select("id,name").order("display_order").order("name"),sb.from("products").select("id,name,description,price,image_url,status,category_id").order("display_order").order("name")]);
+if(c.error||p.error)throw 0;const cm=Object.fromEntries(c.data.map(x=>[x.id,x.name]));
+CATEGORIES=c.data.filter(x=>p.data.some(q=>q.category_id==x.id)).map(x=>x.name);
+PRODUCTS=p.data.map(x=>({id:x.id,name:x.name,category:cm[x.category_id]||"Other",description:x.description||"",price:x.price==null?null:Number(x.price),image:x.image_url||"",pos:"center",available:x.status=="available",status:x.status}))}
+catch(e){$("#grid").innerHTML='<p class="note">We\'re having trouble loading our products. Please try again shortly or contact us on WhatsApp.</p>';return}
+if(!PRODUCTS.length){$("#grid").innerHTML='<p class="note">New crackers are coming soon. Message us on WhatsApp for today\'s range.</p>';return}
+chips();grid()})();
+// business settings edited in Admin > Settings (only applied where the admin has entered a value)
+window.sb&&sb.from("settings").select("key,value").then(({data})=>{const v=Object.fromEntries((data||[]).filter(x=>x.value&&x.value.trim()).map(x=>[x.key,x.value.trim()]));
+if(v.whatsapp){PHONE=v.whatsapp.replace(/\D/g,"");document.querySelectorAll("[data-wa]").forEach(a=>a.href=wa(GEN))}
+if(v.phone){const d=v.phone.replace(/[^\d+]/g,"");document.querySelectorAll('a[href^="tel:+918807030143"]').forEach(a=>{a.href="tel:"+d;if(a.textContent.includes("+91 88070"))a.textContent=v.phone})}
+if(v.instagram_url)document.querySelectorAll('a[href*="instagram.com"]').forEach(a=>a.href=v.instagram_url);
+if(v.maps_url)document.querySelectorAll('a[href*="google.com/maps"]').forEach(a=>a.href=v.maps_url)});
 $("#gal").innerHTML=GALLERY.map((g,i)=>`<button class="g ${g.c||""}" style="background-position:${g.pos};background-size:${g.img?"cover":g.c?"170%":"230%"}${g.img?";background-image:var(--front)":""}" data-img="${g.img||""}" aria-label="Enlarge shop photo ${i+1}" data-p="${g.pos}"></button>`).join("");
 document.querySelectorAll(".g").forEach(g=>g.onclick=()=>{const d=$("#lb div");d.style.cssText=g.dataset.img?"background-image:var(--front);background-size:contain;background-repeat:no-repeat;background-position:center;height:85vh;aspect-ratio:auto;border:0;background-color:transparent":"";$("#lb").classList.add("o")});
 $("#lb").onclick=()=>$("#lb").classList.remove("o");addEventListener("keydown",e=>e.key=="Escape"&&$("#lb").classList.remove("o"));
